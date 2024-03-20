@@ -1,0 +1,30 @@
+&pinctrl {
+  pwm_7bp15: pwm_7bp15{ group1{ pinmux = <PWM_7B_P15>; }; };
+};
+
+&pwm{
+  status = "okay";
+  pinctrl-0 = <&pwm_7bp15>;
+  pinctrl-names = "default";
+  divider-int-7 = <1>;
+  divider-frac-7 = <0>;
+};
+/{
+  valve_switch: valve_switch{
+    compatible = "power-switch";
+    gpios = <&gpio0 8 GPIO_ACTIVE_LOW>;
+  };
+
+  servo: servo{
+    compatible = "pwm-servo";
+    status = "okay";
+    pwms = <&pwm 15 PWM_USEC(50) PWM_POLARITY_INVERTED>;
+    //pwms = <&pwm 15 PWM_USEC(100) PWM_POLARITY_NORMAL>;
+    min-pulse = <PWM_USEC(4)>;
+    max-pulse = <PWM_USEC(40)>;
+  };
+  aliases {
+    switch0 = &valve_switch;
+    servo0 = &servo;
+  };
+};
